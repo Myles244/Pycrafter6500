@@ -54,7 +54,7 @@ def merge(images):
         image8 = np.zeros((1080, 1920), dtype=np.uint8)
         for j in range(batch_size):
             image8 += images[i*8+j]*(1 << j)
-        image32 += image8*(1 << (i*8))
+        image32 += np.uint32(image8)*(1 << (i*8))
     return image32
 
 
