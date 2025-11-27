@@ -29,6 +29,26 @@ def bitstobytes(a):
 
     return bytelist
 
+def encodeimages(images):
+        
+        num=len(images)
+        encodedimages=[]
+        sizes=[]
+
+        for i in range((num-1)//24+1):
+            print ('merging...')
+            if i<((num-1)//24):
+                imagedata=images[i*24:(i+1)*24]
+            else:
+                imagedata=images[i*24:]
+            print ('encoding...')
+            imagedata,size=encode(imagedata)
+
+            encodedimages.append(imagedata)
+            sizes.append(size)
+
+        return encodedimages,sizes
+
 ##a dmd controller class
 
 class dmd():
@@ -274,36 +294,9 @@ class dmd():
 
 
             self.checkforerrors()
-
-
-    def defsequence(self,images,exp,ti,dt,to,rep):
-
-        self.stopsequence()
-
-        arr=[]
-
-        for i in images:
-            arr.append(i)
-
-##        arr.append(numpy.ones((1080,1920),dtype='uint8'))
-
-        num=len(arr)
-
-        encodedimages=[]
-        sizes=[]
-
+    
+    def uploadsequence(self,encodedimages,sizes,num,exp,ti,dt,to,rep):
         for i in range((num-1)//24+1):
-            print ('merging...')
-            if i<((num-1)//24):
-                imagedata=arr[i*24:(i+1)*24]
-            else:
-                imagedata=arr[i*24:]
-            print ('encoding...')
-            imagedata,size=encode(imagedata)
-
-            encodedimages.append(imagedata)
-            sizes.append(size)
-
             if i<((num-1)//24):
                 for j in range(i*24,(i+1)*24):
                     self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24)
@@ -319,6 +312,69 @@ class dmd():
 
             print ('uploading...')
             self.bmpload(encodedimages[(num-1)//24-i],sizes[(num-1)//24-i])
+
+    def defsequence(self,images,exp,ti,dt,to,rep):
+
+        self.stopsequence()
+
+        arr=[]
+
+        for i in images:
+            arr.append(i)
+
+##        arr.append(numpy.ones((1080,1920),dtype='uint8'))
+
+        num=len(arr)
+
+        encodedimages,sizes=encodeimages(arr)
+
+        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
+        
+
+    def loadsequence(self,name,exp=None,ti=None,dt=None,to=None,rep=None):
+        data=numpy.load(name,allow_pickle=True)
+        encodedimages=data['encodedimages']
+        sizes=data['sizes']
+        num=data['num']
+        if exp is None:
+            exp=data['exp']
+        if ti is None:
+            ti=data['ti']
+        if dt is None:
+            dt=data['dt']
+        if to is None:
+            to=data['to']
+        if rep is None:
+            rep=data['rep']
+
+        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
+
+
+def savesequence(images,exp,ti,dt,to,rep,name):
+        arr=[]
+
+        for i in images:
+            arr.append(i)
+
+##        arr.append(numpy.ones((1080,1920),dtype='uint8'))
+
+        num=len(arr)
+
+        encodedimages,sizes=encodeimages(arr)
+
+        numpy.savez_compressed(
+            name,
+            encodedimages=numpy.array(encodedimages,dtype=bytearray),
+            sizes=sizes,
+            num=num,
+            exp=exp,
+            ti=ti,
+            dt=dt,
+            to=to,
+            rep=rep
+            )
+
+
 
 
 
