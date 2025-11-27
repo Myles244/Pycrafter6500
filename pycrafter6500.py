@@ -292,7 +292,8 @@ class dmd():
 
             encodedimages.append(imagedata)
             sizes.append(size)
-        return imagedata,size
+
+        return encodedimages,sizes
     
     def uploadsequence(self,encodedimages,sizes,num,exp,ti,dt,to,rep):
         for i in range((num-1)//24+1):
@@ -325,7 +326,7 @@ class dmd():
 
         num=len(arr)
 
-        encodedimages,sizes=self.encodeimages(self,arr)
+        encodedimages,sizes=self.encodeimages(arr)
 
         self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
 
@@ -341,7 +342,7 @@ class dmd():
 
         num=len(arr)
 
-        encodedimages,sizes=self.encodeimages(self,arr)
+        encodedimages,sizes=self.encodeimages(arr)
 
         numpy.savez(
             name,
