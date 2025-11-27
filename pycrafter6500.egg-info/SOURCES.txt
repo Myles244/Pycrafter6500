@@ -1,0 +1,8 @@
+erle.py
+license.txt
+pycrafter6500.py
+setup.py
+pycrafter6500.egg-info/PKG-INFO
+pycrafter6500.egg-info/SOURCES.txt
+pycrafter6500.egg-info/dependency_links.txt
+pycrafter6500.egg-info/top_level.txt
