@@ -29,6 +29,26 @@ def bitstobytes(a):
 
     return bytelist
 
+def encodeimages(images):
+        
+        num=len(images)
+        encodedimages=[]
+        sizes=[]
+
+        for i in range((num-1)//24+1):
+            print ('merging...')
+            if i<((num-1)//24):
+                imagedata=images[i*24:(i+1)*24]
+            else:
+                imagedata=images[i*24:]
+            print ('encoding...')
+            imagedata,size=encode(imagedata)
+
+            encodedimages.append(imagedata)
+            sizes.append(size)
+
+        return encodedimages,sizes
+
 ##a dmd controller class
 
 class dmd():
@@ -274,26 +294,6 @@ class dmd():
 
 
             self.checkforerrors()
-
-    def encodeimages(self,images):
-        
-        num=len(images)
-        encodedimages=[]
-        sizes=[]
-
-        for i in range((num-1)//24+1):
-            print ('merging...')
-            if i<((num-1)//24):
-                imagedata=images[i*24:(i+1)*24]
-            else:
-                imagedata=images[i*24:]
-            print ('encoding...')
-            imagedata,size=encode(imagedata)
-
-            encodedimages.append(imagedata)
-            sizes.append(size)
-
-        return encodedimages,sizes
     
     def uploadsequence(self,encodedimages,sizes,num,exp,ti,dt,to,rep):
         for i in range((num-1)//24+1):
@@ -326,7 +326,7 @@ class dmd():
 
         num=len(arr)
 
-        encodedimages,sizes=self.encodeimages(arr)
+        encodedimages,sizes=encodeimages(arr)
 
         self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
         
@@ -360,7 +360,7 @@ def savesequence(images,exp,ti,dt,to,rep,name):
 
         num=len(arr)
 
-        encodedimages,sizes=self.encodeimages(arr)
+        encodedimages,sizes=encodeimages(arr)
 
         numpy.savez_compressed(
             name,
