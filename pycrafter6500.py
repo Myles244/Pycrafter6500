@@ -344,9 +344,9 @@ class dmd():
 
         encodedimages,sizes=self.encodeimages(arr)
 
-        numpy.savez(
+        numpy.savez_compressed(
             name,
-            encodedimages=encodedimages,
+            encodedimages=numpy.array(encodedimages,dtype=bytearray),
             sizes=sizes,
             num=num,
             exp=exp,
@@ -358,7 +358,7 @@ class dmd():
         
 
     def loadsequence(self,name,exp=None,ti=None,dt=None,to=None,rep=None):
-        data=numpy.load(name)
+        data=numpy.load(name,allow_pickle=True)
         encodedimages=data['encodedimages']
         sizes=data['sizes']
         num=data['num']
