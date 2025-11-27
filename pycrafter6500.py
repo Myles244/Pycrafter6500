@@ -329,10 +329,28 @@ class dmd():
         encodedimages,sizes=self.encodeimages(arr)
 
         self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
-
         
 
-    def savesequence(self,images,exp,ti,dt,to,rep,name):
+    def loadsequence(self,name,exp=None,ti=None,dt=None,to=None,rep=None):
+        data=numpy.load(name,allow_pickle=True)
+        encodedimages=data['encodedimages']
+        sizes=data['sizes']
+        num=data['num']
+        if exp is None:
+            exp=data['exp']
+        if ti is None:
+            ti=data['ti']
+        if dt is None:
+            dt=data['dt']
+        if to is None:
+            to=data['to']
+        if rep is None:
+            rep=data['rep']
+
+        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
+
+
+def savesequence(images,exp,ti,dt,to,rep,name):
         arr=[]
 
         for i in images:
@@ -355,25 +373,6 @@ class dmd():
             to=to,
             rep=rep
             )
-        
-
-    def loadsequence(self,name,exp=None,ti=None,dt=None,to=None,rep=None):
-        data=numpy.load(name,allow_pickle=True)
-        encodedimages=data['encodedimages']
-        sizes=data['sizes']
-        num=data['num']
-        if exp is None:
-            exp=data['exp']
-        if ti is None:
-            ti=data['ti']
-        if dt is None:
-            dt=data['dt']
-        if to is None:
-            to=data['to']
-        if rep is None:
-            rep=data['rep']
-
-        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
 
 
 
