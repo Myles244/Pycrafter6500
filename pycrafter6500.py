@@ -325,9 +325,9 @@ class dmd():
 
         num=len(arr)
 
-        encodedimages,sizes=encodedimages(self,arr)
+        encodedimages,sizes=self.encodeimages(self,arr)
 
-        uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
+        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
 
         
 
@@ -341,7 +341,7 @@ class dmd():
 
         num=len(arr)
 
-        encodedimages,sizes=encodedimages(self,arr)
+        encodedimages,sizes=self.encodeimages(self,arr)
 
         numpy.savez(
             name,
@@ -355,7 +355,6 @@ class dmd():
             rep=rep
             )
         
-        print(type(encodedimages))
 
     def loadsequence(self,name,exp=None,ti=None,dt=None,to=None,rep=None):
         data=numpy.load(name)
@@ -373,9 +372,7 @@ class dmd():
         if rep is None:
             rep=data['rep']
 
-        print(type(encodedimages))
-
-        uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
+        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
 
 
 
