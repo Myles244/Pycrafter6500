@@ -275,8 +275,6 @@ class dmd():
         counter=0
 
         for i in range(packnum):
-            if i %100==0:
-                print (i,packnum)
             payload=[]
             if i<packnum-1:
                 leng=convlen(504,16)
@@ -296,22 +294,29 @@ class dmd():
             self.checkforerrors()
     
     def uploadsequence(self,encodedimages,sizes,num,exp,ti,dt,to,rep):
+        print('uploading...')
         for i in range((num-1)//24+1):
+            print(f"\rdefining pattern {i+1}/{(num-1)//24+1}...",end="")
             if i<((num-1)//24):
                 for j in range(i*24,(i+1)*24):
                     self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24)
             else:
                 for j in range(i*24,num):
                     self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24)
-
+                    
+        print("\rconfiguring lut..."+" "*20,end="")
         self.configurelut(num,rep)
 
-        for i in range((num-1)//24+1):
+
         
+        for i in range((num-1)//24+1):
+            print(f"\rsetting ang loading bmp {i+1}/{(num-1)//24+1}...",end="")
             self.setbmp((num-1)//24-i,sizes[(num-1)//24-i])
 
-            print ('uploading...')
+            
             self.bmpload(encodedimages[(num-1)//24-i],sizes[(num-1)//24-i])
+        
+        print("\rupload complete."+" "*20)
 
     def defsequence(self,images,exp,ti,dt,to,rep):
 
