@@ -224,7 +224,7 @@ class dmd():
         self.command('w',0x00,0x1a,0x34,payload)
         self.checkforerrors()
         
-
+ 
 
     def setbmp(self,index,size):
         payload=[]
@@ -276,49 +276,51 @@ class dmd():
             self.checkforerrors()
 
 
-    def defsequence(self,images,exp,ti,dt,to,rep):
+    def defsequence(self,images,exp,ti,dt,to,rep,order=None):
 
         self.stopsequence()
 
-        arr=[]
+        arr=list(images)
 
-        for i in images:
-            arr.append(i)
+        num_images=len(arr)
+        num_stacked_images=(num_images-1)//24+1
+        num_frames=num_images if order==None else len(order)
 
-##        arr.append(numpy.ones((1080,1920),dtype='uint8'))
+        #define pattern
+        for frame in range(num_frames):
+            image_index=frame if order==None else order[frame]
 
-        num=len(arr)
+            stacked_image_index=image_index//24
+            bit_pos=image_index%24
+
+            self.definepattern(frame,exp[frame],1,'111',ti[frame],dt[frame],to[frame],stacked_image_index,bit_pos)
+
+
+        self.configurelut(num_frames,rep)
 
         encodedimages=[]
         sizes=[]
 
-        for i in range((num-1)//24+1):
+        #merge and upload images
+        for i in range(num_stacked_images):
+
             print ('merging...')
-            if i<((num-1)//24):
+            if i<num_stacked_images-1:
                 imagedata=arr[i*24:(i+1)*24]
             else:
                 imagedata=arr[i*24:]
+
             print ('encoding...')
             imagedata,size=encode(imagedata)
-
             encodedimages.append(imagedata)
             sizes.append(size)
 
-            if i<((num-1)//24):
-                for j in range(i*24,(i+1)*24):
-                    self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24)
-            else:
-                for j in range(i*24,num):
-                    self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24)
-
-        self.configurelut(num,rep)
-
-        for i in range((num-1)//24+1):
+        for i in range(num_stacked_images):
         
-            self.setbmp((num-1)//24-i,sizes[(num-1)//24-i])
+            self.setbmp(num_stacked_images-1-i,sizes[num_stacked_images-1-i])
 
             print ('uploading...')
-            self.bmpload(encodedimages[(num-1)//24-i],sizes[(num-1)//24-i])
+            self.bmpload(encodedimages[num_stacked_images-1-i],sizes[num_stacked_images-1-i])
 
 
 
