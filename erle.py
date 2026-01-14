@@ -124,7 +124,7 @@ def encode_row(row, same_prev):
             j_start = j
             pixels = bgr(row[j]) + bgr(row[j+1])
             j += 2
-            while j == 1919 or not same_either[j]:
+            while j<1920 and (j == 1919 or not same_either[j]):
                 pixels += bgr(row[j])
                 j += 1
             compressed += b'\x00' + enc128(j-j_start) + pixels
