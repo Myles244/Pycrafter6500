@@ -35,13 +35,12 @@ def encodeimages(images):
         encodedimages=[]
         sizes=[]
 
+        print("merging and encoding...")
         for i in range((num-1)//24+1):
-            print ('merging...')
             if i<((num-1)//24):
                 imagedata=images[i*24:(i+1)*24]
             else:
                 imagedata=images[i*24:]
-            print ('encoding...')
             imagedata,size=encode(imagedata)
 
             encodedimages.append(imagedata)
@@ -304,13 +303,12 @@ class dmd():
                 for j in range(i*24,num):
                     self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24)
                     
-        print("\rconfiguring lut..."+" "*20,end="")
         self.configurelut(num,rep)
 
 
         
         for i in range((num-1)//24+1):
-            print(f"\rsetting ang loading bmp {i+1}/{(num-1)//24+1}...",end="")
+            print(f"\rUploading bitmaps {i+1}/{(num-1)//24+1}...",end="")
             self.setbmp((num-1)//24-i,sizes[(num-1)//24-i])
 
             
