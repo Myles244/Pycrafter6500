@@ -199,7 +199,7 @@ class dmd():
         self.checkforerrors()
         
 
-    def definepattern(self,index,exposure,bitdepth,color,triggerin,darktime,triggerout,patind,bitpos,clear_pattern=True):
+    def definepattern(self,index,exposure,bitdepth,color,triggerin,darktime,triggerout,patind,bitpos,clear_pattern):
         payload=[]
         index=convlen(index,16)
         index=bitstobytes(index)
@@ -297,16 +297,16 @@ class dmd():
 
             self.checkforerrors()
     
-    def uploadsequence(self,encodedimages,sizes,num,exp,ti,dt,to,rep):
+    def uploadsequence(self,encodedimages,sizes,num,exp,ti,dt,to,rep,clear_pattern):
         print('uploading...')
         for i in range((num-1)//24+1):
             print(f"\rdefining pattern {i+1}/{(num-1)//24+1}...",end="")
             if i<((num-1)//24):
                 for j in range(i*24,(i+1)*24):
-                    self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24)
+                    self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24,clear_pattern)
             else:
                 for j in range(i*24,num):
-                    self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24)
+                    self.definepattern(j,exp[j],1,'111',ti[j],dt[j],to[j],i,j-i*24,clear_pattern)
                     
         self.configurelut(num,rep)
 
@@ -321,7 +321,7 @@ class dmd():
         
         print("\nupload complete.")
 
-    def defsequence(self,images,exp,ti,dt,to,rep):
+    def defsequence(self,images,exp,ti,dt,to,rep,clear_pattern=True):
 
         self.stopsequence()
 
@@ -336,10 +336,10 @@ class dmd():
 
         encodedimages,sizes=encodeimages(arr)
 
-        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
+        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep,clear_pattern)
         
 
-    def loadsequence(self,name,exp=None,ti=None,dt=None,to=None,rep=None):
+    def loadsequence(self,name,exp=None,ti=None,dt=None,to=None,rep=None,clear_pattern=True):
         data=numpy.load(name,allow_pickle=True)
         encodedimages=data['encodedimages']
         sizes=data['sizes']
@@ -355,7 +355,7 @@ class dmd():
         if rep is None:
             rep=data['rep']
 
-        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep)
+        self.uploadsequence(encodedimages,sizes,num,exp,ti,dt,to,rep,clear_pattern)
 
     def set_gpio(self, gpio_id, high):
             """
