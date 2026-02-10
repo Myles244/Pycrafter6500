@@ -246,6 +246,7 @@ class dmd():
 
 
     def setbmp(self,index,size):
+
         payload=[]
 
         index=convlen(index,5)
@@ -268,12 +269,16 @@ class dmd():
 ## size of package description bytes=2. 64-4-2-2=56
 
     def bmpload(self,image,size):
-
+        
         packnum=size//504+1
 
         counter=0
 
         for i in range(packnum):
+            
+            msg = f"    sending packet {i}/{packnum}".ljust(30)
+            print(msg, end="\b" * len(msg), flush=True)
+
             payload=[]
             if i<packnum-1:
                 leng=convlen(504,16)
