@@ -384,7 +384,23 @@ def savesequence(images,exp,ti,dt,to,rep,name):
 
 
 
-
+    def set_gpio(self, gpio_id, high):
+            """
+            Configures a GPIO pin as an output and sets its state.
+            
+            Args:
+                gpio_id (int): The internal GPIO number. 
+                            Note: Physical Pin = gpio_id + (offset varies by header).
+                            E.g., On J12, Physical Pin 7 is gpio_id 4.
+                high (bool): True for High (3.3V), False for Low (0V).
+            """
+            # Byte 0: GPIO Number
+            # Byte 1: Config 
+            #   Bit 0: State (1=High, 0=Low)
+            #   Bit 1: Direction (1=Output, 0=Input)
+            
+            config_byte = 0x03 if high else 0x02
+            self.command('w', 0x00, 0x1A, 0x38, [gpio_id, config_byte])
 
 
 
