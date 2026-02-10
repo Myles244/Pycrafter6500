@@ -319,7 +319,7 @@ class dmd():
             
             self.bmpload(encodedimages[(num-1)//24-i],sizes[(num-1)//24-i])
         
-        print("\rupload complete."+" "*20)
+        print("\nupload complete.")
 
     def defsequence(self,images,exp,ti,dt,to,rep):
 
