@@ -180,7 +180,7 @@ class dmd():
         self.checkforerrors()
         
 
-    def definepattern(self,index,exposure,bitdepth,color,triggerin,darktime,triggerout,patind,bitpos):
+    def definepattern(self,index,exposure,bitdepth,color,triggerin,darktime,triggerout,patind,bitpos,clear_pattern=True):
         payload=[]
         index=convlen(index,16)
         index=bitstobytes(index)
@@ -192,7 +192,7 @@ class dmd():
         for i in range(len(exposure)):
             payload.append(exposure[i])
         optionsbyte=''
-        optionsbyte+='1'
+        optionsbyte+='1' if clear_pattern else '0'
         bitdepth=convlen(bitdepth-1,3)
         optionsbyte=bitdepth+optionsbyte
         optionsbyte=color+optionsbyte
